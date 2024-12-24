@@ -2,7 +2,7 @@ import requests
 from tkinter import *
 
 def clearFrame(frame):
-    """remove all widgets from a frame"""
+    # remove all widgets from a frame
     for widget in frame.winfo_children():
         widget.destroy()
     frame.grid_forget()
