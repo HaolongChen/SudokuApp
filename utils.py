@@ -1,5 +1,5 @@
 import requests
-from tkinter import *
+
 
 def clearFrame(frame):
     # remove all widgets from a frame

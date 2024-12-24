@@ -1,5 +1,4 @@
-import menu, game, result
-import utils
+import menu
 from utils import *
 
 root = Tk()

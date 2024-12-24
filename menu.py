@@ -52,6 +52,6 @@ class Menu:
             puzzle = utils.getPuzzle(self.urlForGet, self.urlForPost)
             utils.clearFrame(self.frameOfMenu)
             gameController = game.GameController(self.master, puzzle, -1)
-            temp = gameController.monitor()
+            gameController.monitor()
         else:
             self.statusId = self.master.after(10, self.checkStatus) # run self.checkStatus per 10 ms
