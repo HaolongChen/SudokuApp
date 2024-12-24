@@ -5,39 +5,74 @@ def clearFrame(frame):
     """remove all widgets from a frame"""
     for widget in frame.winfo_children():
         widget.destroy()
+    frame.grid_forget()
+    frame.destroy()
 
-def getPuzzle(url, difficulty, step):
+def getPuzzle(geturl, posturl):
     """
-    get a puzzle from url matching the difficulty
-    :param url: a website url where the puzzles are generated
-    :param difficulty: the difficulty of the puzzle user chooses
-    :return: a list of puzzle named value and a list of solution named solution
+    get a puzzle
+    :param geturl: url for getting puzzle
+    :param posturl: url for posting puzzle
+    :return: a puzzle
     """
-    response = requests.get(url)
-    print("getting puzzle")
+    response = requests.get(geturl)
     if response.status_code == 200:
-        print("matching puzzle")
-        data = response.json()
-        print (data)
-        for i in range(0, 20):
-            if data["newboard"]["grids"][i]["difficulty"] == difficulty:
-                return (data["newboard"]["grids"][i]["value"],
-                        data["newboard"]["grids"][i]["solution"])
-            if step > 5 and difficulty == "Easy":
-                if data["newboard"]["grids"][i]["difficulty"] == "Medium":
-                    return (data["newboard"]["grids"][i]["value"],
-                            data["newboard"]["grids"][i]["solution"])
-        return getPuzzle(url, difficulty, step + 1)
+        puzzle = response.json()
+        return puzzle['board']
     else:
         print("Error: API request failed with status code {}".format(response.status_code))
         if response.status_code == 504:
             print("To many requests, try again later")
-            return getPuzzle(url, difficulty, step)
         return None
 
-def createFrameOfMenu(master):
+def getMinAndSec(counter):
     """
-    creates a new frame of menu
-    :return: a new frame of menu
+    :param counter: total time in seconds
+    :return: minute and second in form of MM:SS
     """
-    return Frame(master)
+    minute, second = counter // 60, counter % 60
+    timer = str(minute) + ":" + str(second)
+    if timer.find(":") <= 1:
+        timer = '0' + timer
+    if len(timer) - timer.find(":") <= 2:
+        timer = timer[0:timer.find(":") + 1] + '0' + timer[timer.find(":") + 1:]
+    return timer
+
+def validity(puzzle):
+    """
+    check if a puzzle is valid
+    :param puzzle: user's puzzle
+    :return: True if valid, False if not
+    """
+    for i in range(9):
+        if not repeat(puzzle[i]):
+            return False
+    for i in range(9):
+        numbers = list()
+        for j in range(9):
+            numbers.append(puzzle[j][i])
+        if not repeat(numbers):
+            return False
+    rows = [0, 3, 6]
+    cols = [0, 3, 6]
+    for row in rows:
+        for col in cols:
+            numbers = list()
+            for i in range(3):
+                for j in range(3):
+                    numbers.append(puzzle[row + i][col + j])
+            if not repeat(numbers):
+                return False
+    return True
+
+
+def repeat(numbers):
+    """
+    check if a list of numbers is repeated
+    :param numbers: a row, a column or a block
+    :return: True if not repeated, False if repeated
+    """
+    for i in range(1, 10):
+        if i not in numbers:
+            return False
+    return True

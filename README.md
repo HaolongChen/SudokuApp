@@ -1,2 +1,2 @@
 # Description:
-### SudokuApp is simple game based on tkinter
+### SudokuApp is a simple game based on tkinter
