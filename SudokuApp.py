@@ -1,4 +1,5 @@
 import menu
+from tkinter import *
 from utils import *
 
 root = Tk()
