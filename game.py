@@ -269,8 +269,7 @@ class GameController(Grid, MainUI):
             utils.clearFrame(self.frameOfGame)
             self.stopTimer()
             self.status = None
-            menuController = menu.Menu(self.localMaster)
-            menuController.checkStatus()
+            menu.Menu(self.localMaster)
             return 0
 
         if self.numberOfClicked == "reset":
