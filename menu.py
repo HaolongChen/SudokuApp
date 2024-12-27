@@ -45,13 +45,7 @@ class Menu:
         self.difficulty = difficulty
         self.urlForGet += self.difficulty
 
-    def checkStatus(self):
-        # check whether difficulty has been chosen by running this function per 10 ms if chosen, start game
-        if self.difficulty is not None:
-            self.master.after_cancel(self.statusId)
-            puzzle = utils.getPuzzle(self.urlForGet, self.urlForPost)
-            utils.clearFrame(self.frameOfMenu)
-            gameController = game.GameController(self.master, puzzle, -1)
-            gameController.monitor()
-        else:
-            self.statusId = self.master.after(10, self.checkStatus) # run self.checkStatus per 10 ms
+        puzzle = utils.getPuzzle(self.urlForGet, self.urlForPost)
+        utils.clearFrame(self.frameOfMenu)
+        gameController = game.GameController(self.master, puzzle, -1)
+        gameController.monitor()
