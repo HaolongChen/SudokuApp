@@ -4,6 +4,7 @@ from tkinter import *
 root = Tk()
 root.title('SudokuApp')
 root.geometry('1000x570')
-menu.Menu(root)
+menuController = menu.Menu(root)
+menuController.checkStatus()
 
 root.mainloop()

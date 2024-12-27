@@ -24,4 +24,5 @@ class Result:
     def restart(self):
         # restart the game
         utils.clearFrame(self.frameOfResult)
-        menu.Menu(self.master)
+        menuController = menu.Menu(self.master)
+        menuController.checkStatus()
