@@ -1,4 +1,54 @@
+import os
 import requests
+from openai import OpenAI
+
+def askGPT(puzzle):
+    """
+    ask chatGPT for the tips for next step of solving the puzzle
+    Using chatGPT 4o mini of GitHub model
+    :param puzzle: current puzzle including user's input
+    :return: message returned from chatGPT
+    """
+    token = open("API.lib", "r").read()
+    endpoint = "https://models.inference.ai.azure.com"
+    modelName = "gpt-4o-mini"
+    client = OpenAI(
+        base_url=endpoint,
+        api_key=token,
+    )
+    prompt = """
+    You will receive a Sudoku puzzle represented as a 2D array. Each row is a list of 9 integers, where 0 represents an empty cell. 
+    Your task is to provide a single tip for the next step in solving the puzzle. 
+    Follow these rules strictly:
+    0. You should think as a human, not as a computer.
+    1. Check each row, column, and 3x3 grid for possible values.
+    2. Identify the most obvious and direct number that can be inferred based on Sudoku rules.
+    3. The row and column of sudoku puzzle are 1-indexed.
+    4. Analyze the puzzle and use one method of Scanning (Single Candidate), Elimination (Pencil Marks), Unique Candidate (Only Choice),
+    Naked Single,Hidden Single,Naked Pair,Hidden Pair,
+    Naked Triple,Hidden Triple,Pointing Pair,Pointing Triple. 
+    Try to use Scanning (Single Candidate), Elimination (Pencil Marks), Unique Candidate (Only Choice) first, 
+    infer step by step and double like a human check whether the tip you provide is absolutely correct.
+    5. Before you are ready to give a tip, solve the puzzle completely and check whether the tip you provide is correct.
+    If incorrect, repeat rule 4.
+    6. Response template: By using [method], the cell in row [x] and column [y] has the number [z].
+    7. Do not provide any extra information or code.
+    """
+    res = ""
+    row = 1
+    for array in puzzle:
+        res += "row" + str(row) + ": "
+        for number in array:
+            res = res + str(number) + " "
+        row += 1
+    response = client.chat.completions.create(
+        messages=[{"role": "system", "content": prompt}, {"role": "user", "content": res}],
+        temperature=1.0,
+        top_p=1.0,
+        max_tokens=1000,
+        model=modelName
+    )
+    return response.choices[0].message.content
 
 
 def clearFrame(frame):

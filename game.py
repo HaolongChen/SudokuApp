@@ -150,6 +150,7 @@ class Grid:
 
 class MainUI:
     def __init__(self, master, counter):
+        self.tip = None
         self.buttonX = None
         self.restart = None
         self.reset = None
@@ -172,6 +173,7 @@ class MainUI:
         self.displayReset()
         self.displayRestart()
         self.displayX()
+        self.displayTips()
 
     def displayTimer(self):
         # display timer
@@ -238,13 +240,19 @@ class MainUI:
         # display restart button
         self.restart = Button(self.master, text="restart", font=("Arial", 35, "bold"), width=3, height=1,
                               bg="light grey", command=lambda: self.recordNumberOfClicked("restart"))
-        self.restart.grid(row=5, column=1, padx=1, pady=1, sticky=EW, columnspan=3)
+        self.restart.grid(row=5, column=1, padx=1, pady=1, sticky=EW, columnspan=2)
 
     def displayX(self):
         # display X button for clearing the current cell
         self.buttonX = Button(self.master, text="x", font=("Arial", 35, "bold"), width=3, height=1,
                               bg="light grey", command=lambda: self.recordNumberOfClicked(""))
         self.buttonX.grid(row=4, column=3, padx=1, pady=1, sticky=EW)
+
+    def displayTips(self):
+        # display tips for introducing chatgpt
+        self.tip = Button(self.master, text="tip", font=("Arial", 35, "bold"), width=3, height=1,
+                           bg="light grey", command=lambda: self.recordNumberOfClicked("tips"))
+        self.tip.grid(row=5, column=3, padx=1, pady=1, sticky=EW)
 
 
 class GameController(Grid, MainUI):
@@ -262,6 +270,13 @@ class GameController(Grid, MainUI):
         monitor game status
         :return: 0 if restarting, 1 if running normally
         """
+
+        if self.numberOfClicked == "tips":
+            # ask chatGPT
+            msg = utils.askGPT(self.answerOfUser)
+            messagebox.showinfo("tips", msg)
+            self.numberOfClicked = None
+
         if self.numberOfClicked == "restart":
             # clear all and run menu
             self.frameOfGame.after_cancel(self.status)
